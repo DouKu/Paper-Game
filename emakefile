@@ -1,0 +1,17 @@
+{
+ [
+    "./lib/*/src/*",
+    "./config/erl/*",
+    "./config/dyn/*",
+	"./src/*"
+ ],
+ [
+ 	{i, "./include"},
+  	{outdir, "ebin"},
+	{inline_size, 30},
+	report,
+    debug_info,
+	warnings_as_errors,
+	verbose
+ ]
+}.
