@@ -2,6 +2,7 @@
 
 #### TODO
 - [ ] 玩法规则
+- [ ] 开发规定
 - [ ] proto
 - [ ] tcp link
 - [ ] mnesia db
