@@ -8,3 +8,13 @@
 - [ ] mnesia db
 - [ ] role process
 - [ ] battle system
+
+#### Usage
+```Shell
+git clone git@github.com:DouKu/Paper-Game.git
+make all
+.
+.
+.
+# 暂时没了
+```
