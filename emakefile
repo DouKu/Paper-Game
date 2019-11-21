@@ -7,6 +7,7 @@
  ],
  [
  	{i, "./include"},
+ 	{i, "./config/erl"},
   	{outdir, "ebin"},
 	{inline_size, 30},
 	report,

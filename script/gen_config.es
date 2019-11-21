@@ -12,7 +12,7 @@
 -define(ERROR(S, A), begin ?E("gen config err:~p ;args ~p~n", [A, S]), halt(1) end).
 -define(CONFIG_SRC_DIR, "config/erl").
 -define(CONFIG_OUTPUT_DIR, "config/dyn").
--define(CONFIG_INCLUDE_PATH, "include").
+-define(CONFIG_INCLUDE_PATH, "config/erl").
 -define(EASY_MAKE_CONFIG, "./script/easy_make.config").
 
 main([]) ->
@@ -29,11 +29,14 @@ erl_config_format(GenName, SrcBody) ->
     StrGenName = erlang:atom_to_list(GenName),
     Head = "%% coding: utf-8
 -module(" ++ StrGenName ++ ").
+-include(\"config.hrl\").
 -export([find/1]).
 %% auto genetate do not edit
 %% ============= make by script, config start ===========
+?CFG_H
 ",
-    Tail = "find(_)->undefined.
+    Tail = "
+?CFG_E.
 %% ============== make by script, config end =============
 ",
     Head ++ SrcBody ++ Tail.
@@ -121,7 +124,7 @@ is_var(_)-> %% nil atom
     false.
 
 format_key_value(Key, Val) ->
-    io_lib:format("find(~w)->~w;~n", [Key, Val]).
+    io_lib:format("?C(~w, ~w)~n", [Key, Val]).
 
 %% =========================================================================
 gen_config() ->
