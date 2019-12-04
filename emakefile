@@ -3,10 +3,14 @@
     "./lib/*/src/*",
     "./config/erl/*",
     "./config/dyn/*",
-	"./src/*"
+	"./src/*",
+	"./src/*/*"
  ],
  [
  	{i, "./include"},
+    {i, "./include/proto"},
+ 	{i, "./lib/gpb/include"},
+ 	{i, "./lib/gpb/src"},
  	{i, "./config/erl"},
   	{outdir, "ebin"},
 	{inline_size, 30},
