@@ -4,6 +4,7 @@
 * [游戏主流程](#游戏主流程)
 * [攻击建造](https://github.com/DouKu/Paper-Game/blob/master/doc/AttackBuilding.md)
 * [防御建造](https://github.com/DouKu/Paper-Game/blob/master/doc/DefendBuilding.md)
+* [场地建造](https://github.com/DouKu/Paper-Game/blob/master/doc/SiteBuilding.md)
 * [攻击指令](#攻击指令)
 
 #### 游戏主流程:
