@@ -1,9 +1,11 @@
 ### 一个我小时候玩过的游戏
 
-#### TODO
-- [ ] 玩法规则
-- [ ] 开发规定
-- [ ] proto
+#### 
+- [玩法规则](https://github.com/DouKu/Paper-Game/blob/master/doc/play_rule/PlayRules.md) 
+- [编译](https://github.com/DouKu/Paper-Game/blob/master/doc/make/Make.md) 
+- [Proto](https://github.com/DouKu/Paper-Game/blob/master/doc/proto/Proto.md) 
+- [Base engine](https://github.com/DouKu/Paper-Game/blob/master/doc/engine/engine.md) 
+- [ ]
 - [ ] tcp link
 - [ ] mnesia db
 - [ ] role process
@@ -16,5 +18,4 @@ make all
 .
 .
 .
-# 暂时没了
 ```
