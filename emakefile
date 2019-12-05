@@ -1,7 +1,7 @@
 {
  %% 引擎的先编译
  [
-	"./engine/*/src/*"
+	"./dkge/*/src/*"
  ],
  [
  	{i, "./include"},

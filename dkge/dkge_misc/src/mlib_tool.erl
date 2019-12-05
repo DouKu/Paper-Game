@@ -4,6 +4,7 @@
 %%% @end
 %%%-------------------------------------------------------------------
 -module(mlib_tool).
+-include("global.hrl").
 -ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
 -endif.
