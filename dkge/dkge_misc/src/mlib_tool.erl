@@ -3,7 +3,7 @@
 %%%     常用且通用的一些工具函数
 %%% @end
 %%%-------------------------------------------------------------------
--module(dlib_tool).
+-module(mlib_tool).
 -ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
 -endif.
@@ -108,7 +108,7 @@ test(N, Max) ->
     Min = 1,
     test2(N, Min, Max, []).
 test2(N, Min, Max, Acc) when N>0 ->
-    T = dlib_tool:random(Min, Max),
+    T = mlib_tool:random(Min, Max),
     {Count, NewAcc} = lists:foldl(fun({Tmp1, Tmp}, {Acc2, Acc3}) -> ?IF( (Tmp1-Tmp)=<T, {Acc2+1, [{Tmp1, Tmp}|Acc3]}, {Acc2, [{Tmp1, Tmp+1}|Acc3]}) end, {0, []}, Acc),
 %%    ?INFO_MSG("~w", [{Acc, T, Count}]),
     test2(N-1, Min, Max-1, [{T+Count, Count}|NewAcc]);
@@ -260,13 +260,13 @@ to_timestamp(T) when erlang:is_tuple(T) ->
 to_timestamp(T) when erlang:is_integer(T) ->
     T;
 to_timestamp(T) ->
-    case catch dlib_tool:to_integer(T) of
+    case catch mlib_tool:to_integer(T) of
         I when erlang:is_integer(I) -> I;
         _ ->
             case re:split(T, ?TIME_MATCH_RE, [trim]) of
                 [_, Year, Mon, Day, Hour, Min, Sec|_] ->
-                    to_timestamp({{dlib_tool:to_integer(Year), dlib_tool:to_integer(Mon), dlib_tool:to_integer(Day)},
-                        {dlib_tool:to_integer(Hour), dlib_tool:to_integer(Min), dlib_tool:to_integer(Sec)}});
+                    to_timestamp({{mlib_tool:to_integer(Year), mlib_tool:to_integer(Mon), mlib_tool:to_integer(Day)},
+                        {mlib_tool:to_integer(Hour), mlib_tool:to_integer(Min), mlib_tool:to_integer(Sec)}});
                 [_] ->
                     erlang:throw({error, T});
                 _Err ->
@@ -403,9 +403,9 @@ floor(X) ->
 
 -spec magnify(number()) -> integer().
 magnify(X) when X>0 ->
-    dlib_tool:ceil(X);
+    mlib_tool:ceil(X);
 magnify(X) ->
-    dlib_tool:floor(X).
+    mlib_tool:floor(X).
 
 %% random module is deprecated since releases 19 (ERTS >= 8.0)
 %% R19的优化 大于等于8.0的版本处理
@@ -529,7 +529,7 @@ random_list2(Rem, LessNum, FullNum, OtherNum, RandomList, RMin, RMax) ->
             true -> {ceil, min, LessNum+OtherNum};
             false -> {floor, max, FullNum+OtherNum}
         end,
-    Add = dlib_tool:Func1(Rem / Length),
+    Add = mlib_tool:Func1(Rem / Length),
     {NewLessNum, NewFullNum, NewOtherNum, NewRandomList, NewRem} =
         lists:foldl(fun(T0, {AccLess, AccFull, AccOther, AccAll, AccRem})->
             Add2 = erlang:Func2(AccRem, Add),
@@ -859,7 +859,7 @@ compare_digit(X1, X2) ->
 %% @doc  unicode代码点长度，一个字符对应一个代码点。
 -spec code_point_len(list() | binary()) -> integer().
 code_point_len(List) ->
-    ListBin = dlib_tool:to_binary(List),
+    ListBin = mlib_tool:to_binary(List),
     erlang:length(unicode:characters_to_list(ListBin)).
 
 %% @doc 去掉头部或尾部或两侧的空白字符
@@ -873,10 +873,10 @@ trim(String0, both) ->
     RE = "^[\\s\\p{C}\\p{Z}]+|[\\s\\p{C}\\p{Z}]+$",
     trim(String0, RE);
 trim(String0, RegEx) ->
-    String = unicode:characters_to_list(dlib_tool:to_binary(String0)),
+    String = unicode:characters_to_list(mlib_tool:to_binary(String0)),
     case catch re:replace(String, RegEx, "", [unicode, global, {return, binary}]) of
         StringBin when is_binary(StringBin) ->
-            dlib_tool:to_list(StringBin);
+            mlib_tool:to_list(StringBin);
         Error ->
             {error, Error}
     end.
@@ -915,17 +915,17 @@ test_randoms() ->
     [begin
         L = lists:seq(1, C),
         erlang:garbage_collect(self()),
-        {T1, _} = timer:tc(fun()->dlib_tool:random_elements(A, L), ok end),
+        {T1, _} = timer:tc(fun()->mlib_tool:random_elements(A, L), ok end),
         erlang:garbage_collect(self()),
-        {T2, _} = timer:tc(fun()->dlib_tool:random_elements_expand(A, L), ok end),
+        {T2, _} = timer:tc(fun()->mlib_tool:random_elements_expand(A, L), ok end),
         erlang:garbage_collect(self()),
-        {T3, _} = timer:tc(fun()->dlib_tool:random_elements(A, L), ok end),
+        {T3, _} = timer:tc(fun()->mlib_tool:random_elements(A, L), ok end),
         erlang:garbage_collect(self()),
-        {T4, _} = timer:tc(fun()->dlib_tool:random_elements_expand(A, L), ok end),
+        {T4, _} = timer:tc(fun()->mlib_tool:random_elements_expand(A, L), ok end),
         erlang:garbage_collect(self()),
-        {T5, _} = timer:tc(fun()->dlib_tool:random_elements(A, L), ok end),
+        {T5, _} = timer:tc(fun()->mlib_tool:random_elements(A, L), ok end),
         erlang:garbage_collect(self()),
-        {T6, _} = timer:tc(fun()->dlib_tool:random_elements_expand(A, L), ok end),
+        {T6, _} = timer:tc(fun()->mlib_tool:random_elements_expand(A, L), ok end),
         io:format("~w~n", [{{A, C}, {T1,T3,T5}, {T2,T4,T6}, (lists:sum([T1,T3,T5])/3) / (lists:sum([T2,T4,T6])/3)}]),
         {{A, C}, {T1,T3,T5}, {T2,T4,T6}, A*A, (lists:sum([T1,T3,T5])/3) / (lists:sum([T2,T4,T6])/3)}
     end|| {A, C}<- GenList].

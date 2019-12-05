@@ -79,7 +79,6 @@
     is_same_date/2
 ]).
 
-
 -define(GREGORIAN_INTERVIAL_TIME,
     (case erlang:get(universal_timestamp) of
         V when erlang:is_integer(V) -> V;
