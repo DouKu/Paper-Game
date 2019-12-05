@@ -18,7 +18,7 @@
 - 修改`emakefile`把引擎的匹配放在前面
 
 #### 函数库
-- `./dkge/dage_misc/src/mlib_tool.erl`
+- `./dkge/dkge_misc/src/mlib_tool.erl`
 - ip转换
 - 数据类型转换
 - MD5哈希
@@ -27,4 +27,8 @@
 - 列表操作：取值，去重，排序等
 
 #### 时间服务
-- ``
+- `./dkge/dkge_time/src/mtime.erl & ./dkge/dkge_time/src/mtime_server.erl`
+- 时间戳转换
+- 订阅时间消息
+- 时间输出格式转换
+- 启动时间服务等
