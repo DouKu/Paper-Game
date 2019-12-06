@@ -51,8 +51,10 @@ make_src:
 	@echo "make erl"
 	@erl -pa $(EBIN_DIRS) -noshell -eval 'case $(EASY_MAKE):make_src() of error -> halt(1); _ -> halt(0) end.'
 
+#移动引擎的app和依赖的app
 deploy:
 	@echo "deploy"
 	@echo "move apps"
 	@cp ./lib/apps/*.app ./ebin/
+	@cp ./dkge/*/app/*.app ./ebin/
 	@echo "deploy done"

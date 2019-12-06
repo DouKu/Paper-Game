@@ -4,11 +4,11 @@
 - [编译引擎](#编译引擎)
 - [函数库](#函数库)
 - [时间服务](#时间服务)
+- [日志](#日志)
 
 #### TODO
 - [x] make engine after make_lib
 - [x] time server
-- [ ] log app
 - [ ] node app
 - [ ] tcp app
 - [ ] db app
@@ -32,3 +32,8 @@
 - 订阅时间消息
 - 时间输出格式转换
 - 启动时间服务等
+
+#### 日志
+- `./dkge/dkge_log/`
+- 日志位置`/data/log/server/{GameCode}_{AgentCode}_{ServerID}_{Year}_{Month}_{Day}`
+- 日志等级：1-5：危险->错误->警告->提示->Debug。后面的等级会把前面等级的日志也输出
