@@ -1,0 +1,9 @@
+{application,dlog_app,
+             [{description,[]},
+              {vsn,"1"},
+              {registered,[]},
+              {applications,[kernel,stdlib]},
+              {mod,{dlog_app,[]}},
+              {env,[]},
+              {modules,[dynamic_compile,dlog,dlog_app,dlog_logger,
+                        dlog_syserror,dlog_loglevel,dlog_sup]}]}.

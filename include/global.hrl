@@ -11,6 +11,14 @@
 -define(FALSE, 0).
 -define(IF(C, T, F), (case (C) of true -> (T); false -> (F) end)).
 
+%%跨服相关
+-define(CROSS_GGROUP, 1).
+-define(CROSS_CCLUSTER, 2).
+
+-define(SERVER_CLOSE_FLAG, server_close_flag).
+-define(IP_MAX_ONLINE_ROLE_NUM, 100000).
+-define(IP_MAX_REG_ROLE_NUM, 100000).
+
 %%日志相关
 -define(PRINT(Format, Args), io:format(Format, Args)).
 -define(NONE, none).
