@@ -1,0 +1,146 @@
+#! /bin/bash 
+##-----------------------------------------------------------
+##  游戏控制脚本
+##-----------------------------------------------------------
+## 获取脚本执行目录
+HERE=$(which "$0" 2>/dev/null || echo .)
+BASE=$(dirname $HERE)
+CUR_DIR=$(cd $BASE; echo $PWD)
+## 自定义脚本
+## source ${CUR_DIR}/script/dgectl_custom
+## 帮助命令
+help()
+{
+    echo '使用说明'
+    echo '基本语法: ${0} 功能指令 [option]'
+    echo '命令模块：'
+    echo 'help                      显示当前帮助内容'
+    echo '-------------------------------------------------------'
+    echo 'start                     启动游戏'
+    echo 'lite                      轻量级模式启动，仅db和log'
+    echo 'stop                      停止游戏'
+    echo 'restart                   重启游戏'
+    echo 'stop_yes                  停止游戏，跳过二次确认'
+    echo 'restart_yes               重启游戏，跳过二次确认'
+    echo 'apps                      app相关操作，start|stop'
+    echo 'debug                     debug相关操作'
+    echo 'live                      互动方式启动游戏，用于检查启动异常'
+    echo 'exprs                     执行erlang代码'
+    echo 'status                    查看服务器状态'
+    echo 'IP                        查看节点IP'
+    echo 'reload_config             重新加载配置(config)文件'
+    echo 'reload_beam               重新加载BEAM'
+    echo 'atomic_reload             原子加载BEAM'
+    echo 'service                   获取服务器运行的角色'
+    custom_help
+}
+## 若dgectl则显示帮助命令
+if [ $# -eq 0 ]; then
+    help
+    exit 0
+fi
+
+## 获取AGENT_CODE和server_id
+AGENT_CODE=$(${ESCRIPT} ${CUR_DIR}/script/run/get_common_config.es agent_code)
+SERVER_ID=$(${ESCRIPT} ${CUR_DIR}/script/run/get_common_config.es server_id)
+GAME_CODE=$(${ESCRIPT} ${CUR_DIR}/script/run/get_common_config.es game_code)
+GAME_ID=$(${ESCRIPT} ${CUR_DIR}/script/run/get_common_config.es game_id)
+COOKIE_EXTEND=$(${ESCRIPT} ${CUR_DIR}/script/run/get_common_config.es cookie_extend)
+
+DATA_DIR='/data'
+LOG_DIR="${DATA_DIR}/logs"
+
+## 初始化文件夹
+mkdir -p ${LOG_DIR}/server/
+mkdir -p ${LOG_DIR}/game/
+mkdir -p ${LOG_DIR}/monitor/
+mkdir -p ${LOG_DIR}/erl_dump/
+
+## 运行目录设置
+RUNNING_DIR="${DATA_DIR}/${GAME_CODE}_${AGENT_CODE}_${SERVER_ID}/server"
+## cookie
+ERLANG_COOKIE="${GAME_CODE}_${AGENT_CODE}_${SERVER_ID}_${COOKIE_EXTEND}"
+## 启动日志文件
+MANAGER_LOG_FILE="${LOG_DIR}/${GAME_CODE}_manager_${AGENT_CODE}_${SERVER_ID}.log"
+
+## 发布后的各个目录 ======= begin =============
+#### -- Server根目录
+SERVER_DIR="${RUNNING_DIR}"
+#### -- Ebin目录设置
+SERVER_EBIN="${SERVER_DIR}/ebin/"
+#### -- 最终config目录设置
+RELEASE_CONFIG_DIR="${SERVER_DIR}/config"
+#### -- 最终setting 目录
+RELEASE_SETTING_DIR="${SERVER_DIR}/setting"
+## Mnesia 目录
+DB_DIR=${DATA_DIR}/database/mnesia/${GAME_CODE}_${AGENT_CODE}_${SERVER_ID}/
+
+## check_deploy_lang
+
+## 获取IP地址，获取规则各项目自定义
+IP=$(custom_ip)
+
+## 获取子shell命令
+TARGET=$1
+shift
+
+## 是否有server_type做参数，若没有则从配置中读取
+SERVER_TYPE=$(${ESCRIPT} ${CUR_DIR}/script/run/get_server_type.es ${IP})
+if ! [ "$SERVER_TYPE" -ge 0 ] 2>/dev/null ; then
+    echo "获取游戏server_type参数错误 server_type ${SERVER_TYPE}，可能是common.config的ip配置错误"
+    exit 1
+fi
+
+# 节点名称
+NODE_NAME="${GAME_CODE}_${AGENT_CODE}_${SERVER_ID}@${IP}"
+
+# 启动参数
+PARAMS=$(custom_param)
+
+## 启动游戏
+start_game()
+{
+    START_SUCC="${RUNNING_DIR}/start_succ"
+    STARTING_FLAG="${RUNNING_DIR}/starting_flag"
+    /bin/rm -f ${START_SUCC}
+    /bin/rm -f $MANAGER_LOG_FILE
+    touch ${STARTING_FLAG}
+    COMMAND="${ERL} -name ${NODE_NAME} ${PARAMS} -s mmgr start -detached -hidden"
+    RETRY_COUNTER=1
+    ps ax | grep beam | grep "name ${NODE_NAME}" >/dev/null
+    if [ $? == 0  ]; then
+        echo "${NODE_NAME} is running"
+        exit 1
+    fi
+
+    ARGS=$*
+
+    for MODE in $ARGS
+    do
+        if [ "$MODE" == 'lite' ]; then
+            COMMAND="${COMMAND} -lite true"
+        elif [ "$MODE" == 'no_db' ]; then
+            COMMAND="${COMMAND} -no_db true"
+        elif [ "$MODE" == 'no_mysql' ]; then
+            COMMAND="${COMMAND} -no_mysql true"
+        fi
+    done
+
+    echo "$COMMAND" >> $MANAGER_LOG_FILE
+    bash -c "$COMMAND"
+    tail -f $MANAGER_LOG_FILE
+    if [ -f ${START_SUCC} ]
+    then
+        echo 'ok'
+        return 0
+    else
+        echo 'error'
+        return 1
+    fi
+}
+
+## 启动
+start()
+{
+    start_game $*
+}

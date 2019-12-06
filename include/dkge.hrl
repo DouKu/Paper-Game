@@ -1,6 +1,5 @@
 %%%----------------------------------------------------------------------
 %%% @author  :
-%%% @date : 2015-04-25
 %%% @doc: 通用的游戏头文件
 %%%----------------------------------------------------------------------
 -ifndef(DKGE_HRL).
@@ -26,5 +25,8 @@
 -define(CRITICAL_MSG(Format, Args),
     dlog_entry:critical_msg( node(), ?MODULE,?LINE,Format, Args)).
 -define(CRITICAL_MSG(D), ?CRITICAL_MSG(D, [])).
+
+%%日志相关
+-define(PRINT(Format, Args), io:format(Format, Args)).
 
 -endif.

@@ -111,10 +111,10 @@ get_version() ->
 
 %% @doc 获取配置文件目录
 get_config_path() ->
-    lists:concat([common_config:get_mge_root(), "config/"]).
+    lists:concat([common_config:get_dge_root(), "config/"]).
 
 get_setting_path() ->
-    lists:concat([common_config:get_mge_root(), "setting/"]).
+    lists:concat([common_config:get_dge_root(), "setting/"]).
 
 get_config_cfg_path()->
     get_config_path() ++ "cfg/".
@@ -250,7 +250,7 @@ do_load_config({ModuleName,FilePath,FileType})  ->
                     case ModuleName =:= common of
                         true ->ignore;
                         _ ->
-                            file:write_file(lists:concat([common_config:get_mge_root(), "/ebin/", ModuleName, ".beam"]), Code, [write, binary])
+                            file:write_file(lists:concat([common_config:get_dge_root(), "/ebin/", ModuleName, ".beam"]), Code, [write, binary])
                     end,
                     clear_exit_info(),
                     ok;
@@ -397,7 +397,7 @@ gen_config_beam(AllFileList, Opts) ->
 %% @doc 编译erl为beam
 %% @returns ok|error
 do_compile_config_erls(_Opts) ->
-    ok = file:set_cwd(lists:concat([common_config:get_mge_root(), "ebin/"])),
+    ok = file:set_cwd(lists:concat([common_config:get_dge_root(), "ebin/"])),
     case easy_make:make_src() of
         up_to_date ->
 %%            save_meta_config(),
@@ -474,7 +474,7 @@ check_file_times(ConfigModuleName, ConfigFile) ->
 
 %% @doc 获取beam文件上次变化时间
 get_beam_time(ConfigModuleName) ->
-    BeamFile = lists:concat([common_config:get_mge_root(), "ebin/", ConfigModuleName, ".beam"]),
+    BeamFile = lists:concat([common_config:get_dge_root(), "ebin/", ConfigModuleName, ".beam"]),
     get_file_time(BeamFile).
 
 get_file_time(File) ->
@@ -554,7 +554,7 @@ gen_src_file(ConfigModuleName, FilePath, Type) ->
                         KeyValues = RecList
                 end,
                 {_, ValList} = lists:unzip(KeyValues),
-                Filename = lists:concat([common_config:get_mge_root(), "ebin/", ConfigModuleName, ".erl"]),
+                Filename = lists:concat([common_config:get_dge_root(), "ebin/", ConfigModuleName, ".erl"]),
                 gen_src2file(Filename, ConfigModuleName, set, KeyValues, ValList),
                 ok
         end

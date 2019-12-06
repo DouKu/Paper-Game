@@ -43,7 +43,7 @@
     get_log_dir/0,              %% 获取日志路径
     merged_times/0,             %% 获取合服次数
     is_merge/0,                 %% 是否已经合服
-    get_mge_root/0,             %% 获取游戏运行代码目录
+    get_dge_root/0,             %% 获取游戏运行代码目录
     get_mnesia_dir/0,           %% 获取mnesia数据库存储路径
     get_max_online/0,           %% 获取最高在线值
     get_queue_num/0,            %% 获取排队人数
@@ -113,7 +113,7 @@
 %% 支持2种文件类型: record_consult,key_value_consult
 get_basic_configs() ->
     [
-%%        {mgee_topo, "mgee_topo.config", key_value_consult},
+        {mgee_topo, "mgee_topo.config", key_value_consult}
 %%        {mchatmon_config, "mchatmon_config.config", key_value_consult},
 %%        {cfg_mnode_service, "cfg_mnode_service.config", key_value_consult},
 %%        {sdk, "sdk.config", key_value_consult},
@@ -145,7 +145,7 @@ reload(FileT) ->
         "cfg" ++ _ -> %% cfg开头的文件
             ErlCfgFileDir = mconf_dyn:get_config_path() ++ "erl/",
             FileName = ErlCfgFileDir ++ File ++ ".erl",
-            compile:file(FileName, [{i, ErlCfgFileDir}, {outdir, common_config:get_mge_root() ++ "ebin"}]),
+            compile:file(FileName, [{i, ErlCfgFileDir}, {outdir, common_config:get_dge_root() ++ "ebin"}]),
             c:l(FileT),
             ok;
         _ ->
@@ -205,7 +205,7 @@ ensure_version_mod(Mod) ->
     case code:is_loaded(Mod) of
         {'file', _} -> ok;
         _ ->
-            VersionInfo = get_mge_root() ++ "/version_server.txt",
+            VersionInfo = get_dge_root() ++ "/version_server.txt",
             case file:read_file(VersionInfo) of
                 {ok, Version} ->
                     [Major | _] = string:tokens(binary_to_list(Version), "-"),
@@ -314,8 +314,8 @@ is_merge() ->
 %% @doc 获取节点运行的代码目录
 %% 此参数在系统启动时由启动脚本决定
 %% @end
-get_mge_root() ->
-    {ok, [[MgeRoot]]} = init:get_argument(mge_root),
+get_dge_root() ->
+    {ok, [[MgeRoot]]} = init:get_argument(dge_root),
     MgeRoot.
 
 get_mnesia_dir() ->
